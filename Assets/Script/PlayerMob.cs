@@ -33,6 +33,7 @@ public class PlayerMob : MonoBehaviour
     bool isSwap;
     bool isFireReady = true;
     bool isBorder;
+    bool isDamege = false;
 
     bool walkDown;
     bool JumpDown;
@@ -51,9 +52,27 @@ public class PlayerMob : MonoBehaviour
     Vector3 DodgeVec;
     Animator animator;
     Rigidbody plrigidbody;
+    MeshRenderer[] meshes;
     GameObject nearobjeact;
     Weapon equipWeapon;
     int equipWeaponIndex = -1;
+    private void Awake()
+    {
+        plrigidbody = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
+        meshes = GetComponentsInChildren<MeshRenderer>();
+    }
+    void Start()
+    {
+        Debug.Log("asd");
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Floor") {
+            animator.SetBool("isJump", false);
+            isJump = false;
+               }
+    }
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Weapon")
@@ -69,6 +88,7 @@ public class PlayerMob : MonoBehaviour
             nearobjeact = null;
         }
     }
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Item")
@@ -96,17 +116,31 @@ public class PlayerMob : MonoBehaviour
             }
             Destroy(other.gameObject);
         }
+      else  if (other.tag == "EnemyBullet"&& isDamege == false)
+        {
+            Debug.Log("EnemyBullet");
+            Bullet enemyBullet = other.GetComponent<Bullet>();
+            health -= enemyBullet.damage;
+            if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
+            StartCoroutine(OnDamege());
+        }
+    }
+    IEnumerator OnDamege()
+    {
+        isDamege = true;
+        foreach(MeshRenderer mesh in meshes)
+        {
+            mesh.material.color = Color.red;
+        }
+        yield return new WaitForSeconds(1);
+        foreach (MeshRenderer mesh in meshes)
+        {
+            mesh.material.color = Color.white;
+        }
+        isDamege = false;
     }
 
-    private void Awake()
-    {
-        plrigidbody = GetComponent<Rigidbody>();
-        animator = GetComponentInChildren<Animator>();
-    }
-    void Start()
-    {
-        Debug.Log("asd");
-    }
+
     void FreezeRotatoin()
     {
         plrigidbody.angularVelocity = Vector3.zero;
@@ -118,12 +152,12 @@ public class PlayerMob : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        PlayerMove();
         FreezeRotatoin();
         StopToWall();
     }
     void Update()
     {
-        PlayerMove();
         Dodge();
         Jump();
         GetInput();
@@ -234,7 +268,7 @@ public class PlayerMob : MonoBehaviour
     }
     void Jump()
     {
-        if (JumpDown && moveVec == Vector3.zero && isJump == false && isSwap)
+        if (JumpDown && moveVec == Vector3.zero && isJump == false && !isSwap)
         {
             plrigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
             animator.SetBool("isJump", true);
@@ -244,7 +278,7 @@ public class PlayerMob : MonoBehaviour
     }
     void Dodge()
     {
-        if (JumpDown && moveVec != Vector3.zero && isJump == false && isSwap)
+        if (JumpDown && moveVec != Vector3.zero && isJump == false && !isSwap)
         {
             DodgeVec = moveVec;
             speed *= 2;
