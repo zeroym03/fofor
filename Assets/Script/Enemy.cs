@@ -6,11 +6,11 @@ public class Enemy : MonoBehaviour
 {
     public enum Type
     {
-        A,B,C,D
+        A, B, C, D
     }
     public Type type;
 
- 
+
     public int MaxHP;
     public int CurHP;
     public Transform target;
@@ -18,12 +18,13 @@ public class Enemy : MonoBehaviour
     public GameObject bullet;
     public bool isAttack;
     public bool isChase;
+    public bool isDead;
 
-    MeshRenderer[] meshs;
-    Rigidbody rb;
-    BoxCollider boxCollider;
-    NavMeshAgent agent;
-    Animator animator;
+    protected MeshRenderer[] meshs;
+    protected Rigidbody rb;
+    protected BoxCollider boxCollider;
+    protected NavMeshAgent agent;
+    protected Animator animator;
     private void Awake()
     {
         meshs = GetComponentsInChildren<MeshRenderer>();
@@ -31,12 +32,12 @@ public class Enemy : MonoBehaviour
         boxCollider = GetComponent<BoxCollider>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        if(type != Type.D)
-        Invoke("CheseStart", 2);
+        if (type != Type.D)
+            Invoke("CheseStart", 2);
     }
     void Targetting()
     {
-        if(type != Type.D)
+        if (!isDead && type != Type.D)
         {
             float targetRadiuse = 0f;
             float targetRange = 0f;
@@ -93,7 +94,7 @@ public class Enemy : MonoBehaviour
                 break;
             case Type.C:
                 yield return new WaitForSeconds(0.5f);
-                GameObject bulletObject = Instantiate(bullet,transform.position,transform.rotation);
+                GameObject bulletObject = Instantiate(bullet, transform.position, transform.rotation);
                 Rigidbody rigidbody = bulletObject.GetComponent<Rigidbody>();
                 rigidbody.velocity = transform.forward * 20;
                 yield return new WaitForSeconds(3f);
@@ -105,9 +106,9 @@ public class Enemy : MonoBehaviour
     }
     void FreezeVelocity()
     {
-        if(isChase)
-        rb.angularVelocity = Vector3.zero;
-        rb.velocity = Vector3.zero; 
+        if (isChase)
+            rb.angularVelocity = Vector3.zero;
+        rb.velocity = Vector3.zero;
     }
     void CheseStart()
     {
@@ -129,7 +130,7 @@ public class Enemy : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-       
+
         if (other.tag == "Melee")
         {
             Weapon weapon = other.GetComponent<Weapon>();
@@ -142,37 +143,39 @@ public class Enemy : MonoBehaviour
             Bullet weapon = other.GetComponent<Bullet>();
             CurHP -= weapon.damage;
             Vector3 reactVec = transform.position - other.transform.position;
-            if(type != Type.D)Destroy(other.gameObject);
+            if (type != Type.D) Destroy(other.gameObject);
 
             StartCoroutine(OnDamege(reactVec, false));
         }
-      
+
     }
-  public  void HitByGranade(Vector3 explosionPos)
+    public void HitByGranade(Vector3 explosionPos)
     {
         CurHP -= 100;
         Vector3 reactVec = transform.position - explosionPos;
-        StartCoroutine(OnDamege(reactVec,true));
+        StartCoroutine(OnDamege(reactVec, true));
     }
     IEnumerator OnDamege(Vector3 reactVec, bool isgranade)
-    {foreach(MeshRenderer Mat in meshs )
-        Mat.material.color = Color.red;
+    {
+        foreach (MeshRenderer Mat in meshs)
+            Mat.material.color = Color.red;
         yield return new WaitForSeconds(0.2f);
-      if(CurHP >0)
-            foreach(MeshRenderer Mat in meshs )
+        if (CurHP > 0)
+            foreach (MeshRenderer Mat in meshs)
                 Mat.material.color = Color.white;
         else
         {
             foreach (MeshRenderer Mat in meshs)
                 Mat.material.color = Color.black;
             gameObject.layer = 14;
+            isDead = true;
             isChase = false;
             agent.enabled = false;
             animator.SetTrigger("Die");
             if (isgranade)
             {
                 reactVec = reactVec.normalized;
-                reactVec += Vector3.up*3;
+                reactVec += Vector3.up * 3;
                 rb.freezeRotation = false;
                 rb.AddForce(reactVec * 5, ForceMode.Impulse);
                 rb.AddTorque(reactVec * 15, ForceMode.Impulse);
@@ -187,7 +190,7 @@ public class Enemy : MonoBehaviour
                 yield return new WaitForSeconds(0.5f);
                 Destroy(gameObject);
             }
-          
+
         }
     }
 }

@@ -116,21 +116,30 @@ public class PlayerMob : MonoBehaviour
             }
             Destroy(other.gameObject);
         }
-      else  if (other.tag == "EnemyBullet"&& isDamege == false)
+      else  if (other.tag == "EnemyBullet" )
         {
-            Debug.Log("EnemyBullet");
-            Bullet enemyBullet = other.GetComponent<Bullet>();
-            health -= enemyBullet.damage;
+            if (isDamege == false)
+            {
+                Debug.Log("EnemyBullet");
+                Bullet enemyBullet = other.GetComponent<Bullet>();
+                health -= enemyBullet.damage;
+                bool isBossAtk = other.name == "Boss Melee Alea";
+                StartCoroutine(OnDamege(isBossAtk));
+            }
+          
             if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
-            StartCoroutine(OnDamege());
         }
     }
-    IEnumerator OnDamege()
+    IEnumerator OnDamege(bool isBossAtk)
     {
         isDamege = true;
         foreach(MeshRenderer mesh in meshes)
         {
             mesh.material.color = Color.red;
+        }
+        if (isBossAtk)
+        {
+            plrigidbody.AddForce(transform.forward * -25, ForceMode.Impulse);
         }
         yield return new WaitForSeconds(1);
         foreach (MeshRenderer mesh in meshes)
@@ -138,6 +147,10 @@ public class PlayerMob : MonoBehaviour
             mesh.material.color = Color.white;
         }
         isDamege = false;
+        if (isBossAtk)
+        {
+            plrigidbody.velocity = Vector3.zero;
+        }
     }
 
 

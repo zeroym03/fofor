@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -573,6 +573,7 @@ GameObject:
   - component: {fileID: 591899721}
   - component: {fileID: 591899720}
   - component: {fileID: 591899719}
+  - component: {fileID: 591899723}
   m_Layer: 0
   m_Name: 'Enemy D '
   m_TagString: Untagged
@@ -650,6 +651,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &591899723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 591899718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58aaefe0e356555439497da59f0defe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
+  MaxHP: 100
+  CurHP: 100
+  target: {fileID: 5903297866307448165}
+  meleeArea: {fileID: 1344455485}
+  bullet: {fileID: 5900959710582839283, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+  isAttack: 0
+  isChase: 0
+  isDead: 0
+  missaile: {fileID: 7287200953568934543, guid: fa34a2c378a2e3d4cb992c84b09657ab, type: 3}
+  missailePortA: {fileID: 1245641556}
+  missailePortB: {fileID: 108654237}
+  isLook: 1
 --- !u!1 &619855977
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,8 +1419,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1344455484}
   - component: {fileID: 1344455485}
+  - component: {fileID: 1344455486}
   m_Layer: 13
-  m_Name: Melee Alea
+  m_Name: Boss Melee Alea
   m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1428,6 +1455,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5, y: 0.36, z: 5}
   m_Center: {x: 0, y: 0.2, z: 0}
+--- !u!114 &1344455486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1344455483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06027aaf459f8ef46965a4ea6a6a4c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
+  isMelee: 1
+  isRock: 0
 --- !u!1 &1409633230
 GameObject:
   m_ObjectHideFlags: 0
@@ -1798,6 +1840,67 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532516562}
   m_Mesh: {fileID: -2551379029201819587, guid: a43df65176acc724e8d74ed0d0e8986a, type: 3}
+--- !u!1001 &1575497884
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 652034309180813050, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5900959710582839283, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_Name
+      value: Boss Rock
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6534647446643854665, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
 --- !u!1001 &1679585258
 PrefabInstance:
   m_ObjectHideFlags: 0
