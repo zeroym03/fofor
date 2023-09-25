@@ -126,7 +126,6 @@ public class PlayerMob : MonoBehaviour
                 bool isBossAtk = other.name == "Boss Melee Alea";
                 StartCoroutine(OnDamege(isBossAtk));
             }
-          
             if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
         }
     }
