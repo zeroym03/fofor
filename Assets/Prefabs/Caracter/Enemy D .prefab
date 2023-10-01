@@ -93,7 +93,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 765914414334318686}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20.96, y: -0.1, z: 20.312084}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -168,11 +168,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
-  MaxHP: 100
-  CurHP: 100
-  target: {fileID: 3946683195260359543, guid: e6b9ac0c1185d1f45b395e7f77f3234a, type: 3}
+  MaxHP: 1000
+  CurHP: 1000
+  score: 100
+  manager: {fileID: 0}
+  target: {fileID: 0}
   meleeArea: {fileID: 765914415661512485}
   bullet: {fileID: 5900959710582839283, guid: 26e9dcf3b894a324594545acdf347ee0, type: 3}
+  coins:
+  - {fileID: 4689435453476274349, guid: 196700b5b30b6de45936b67d5a5f0aef, type: 3}
+  - {fileID: 8673486081992022930, guid: 05976d0f5fe7ad94590454690d2ace8e, type: 3}
+  - {fileID: 6660015987701791864, guid: 501adbc5a2fd08748909eb79a1b80770, type: 3}
   isAttack: 0
   isChase: 0
   isDead: 0

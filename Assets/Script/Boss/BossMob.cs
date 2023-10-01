@@ -28,6 +28,8 @@ public class BossMob : Enemy
         if (isDead)
         {
             StopAllCoroutines();
+            animator.SetTrigger("doDie");
+            Destroy(this.gameObject);
             return;
         }
         if (isLook)

@@ -79,6 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   isMelee: 0
+  isRock: 0
 --- !u!65 &8537163319864932487
 BoxCollider:
   m_ObjectHideFlags: 0

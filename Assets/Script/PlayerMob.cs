@@ -11,12 +11,14 @@ public class PlayerMob : MonoBehaviour
     public GameObject granadeobj;
     public Camera follwouCamera;
     public bool[] hasWeapons;
+    public GameManager gameManager;
+
 
     public int ammo;
     public int coin;
     public int health;
     public int hasGreandes;
-
+    public int score;
 
     public int maxammo;
     public int maxcoin;
@@ -27,7 +29,7 @@ public class PlayerMob : MonoBehaviour
     float axisVerz;
     float fireDelay;
 
-
+    bool isShop;
     bool isJump;
     bool isDodge;
     bool isSwap;
@@ -43,8 +45,9 @@ public class PlayerMob : MonoBehaviour
     bool sDown3;
     bool fDown;
     bool gDown;
-
     bool rDown;
+
+    bool isDead;
     bool isReload;
 
 
@@ -54,13 +57,14 @@ public class PlayerMob : MonoBehaviour
     Rigidbody plrigidbody;
     MeshRenderer[] meshes;
     GameObject nearobjeact;
-    Weapon equipWeapon;
+  public  Weapon equipWeapon;
     int equipWeaponIndex = -1;
     private void Awake()
     {
         plrigidbody = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         meshes = GetComponentsInChildren<MeshRenderer>();
+        PlayerPrefs.SetInt("MaxScore",1000);
     }
     void Start()
     {
@@ -75,7 +79,7 @@ public class PlayerMob : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Weapon")
+        if (other.tag == "Weapon"|| other.tag == "Shop")
         {
             nearobjeact = other.gameObject;
         }
@@ -85,6 +89,12 @@ public class PlayerMob : MonoBehaviour
 
         if (other.tag == "Weapon")
         {
+            nearobjeact = null;
+        }
+        else if (other.tag == "Shop")
+        {
+            Shop shop = other.gameObject.GetComponent<Shop>();
+            shop.Exit();
             nearobjeact = null;
         }
     }
@@ -131,6 +141,10 @@ public class PlayerMob : MonoBehaviour
     }
     IEnumerator OnDamege(bool isBossAtk)
     {
+        if (health <= 0 && !isDead)
+        {
+            OnDie();
+        }
         isDamege = true;
         foreach(MeshRenderer mesh in meshes)
         {
@@ -150,9 +164,15 @@ public class PlayerMob : MonoBehaviour
         {
             plrigidbody.velocity = Vector3.zero;
         }
+    
     }
 
-
+    void OnDie()
+    {
+        animator.SetTrigger("doDie");
+        isDead = true;
+        gameManager.GameOver();
+    }
     void FreezeRotatoin()
     {
         plrigidbody.angularVelocity = Vector3.zero;
@@ -170,15 +190,19 @@ public class PlayerMob : MonoBehaviour
     }
     void Update()
     {
-        Dodge();
-        Jump();
-        GetInput();
-        Anime();
-        Attack();
-        Reload();
-        Swap();
-        Interation();
-        Granade();
+        if(!isDead)
+        {
+            Dodge();
+            Jump();
+            GetInput();
+            Anime();
+            Attack();
+            Reload();
+            Swap();
+            Interation();
+            Granade();
+        }
+      //  OnDie();
     }
     void Granade()
     {
@@ -257,7 +281,7 @@ public class PlayerMob : MonoBehaviour
         if (equipWeapon == null) return;
         fireDelay += Time.deltaTime;
         isFireReady = equipWeapon.rate < fireDelay;
-        if (fDown && isFireReady && isDodge == false && isSwap == false)
+        if (fDown && isFireReady && isDodge == false && isSwap == false&&!isShop)
         {
             equipWeapon.Use();
             animator.SetTrigger(equipWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
@@ -343,6 +367,13 @@ public class PlayerMob : MonoBehaviour
                 hasWeapons[weaponindex] = true;
                 Destroy(nearobjeact);
 
+            }
+            else if (nearobjeact.tag == "Shop")
+            {
+                Shop shop = nearobjeact.GetComponent<Shop>();
+                shop.Enter(this);
+                isShop = false;
+                nearobjeact = null;
             }
         }
     }

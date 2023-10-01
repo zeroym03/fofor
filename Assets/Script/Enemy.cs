@@ -13,9 +13,13 @@ public class Enemy : MonoBehaviour
 
     public int MaxHP;
     public int CurHP;
+    public int score;
+
+    public GameManager manager;
     public Transform target;
     public BoxCollider meleeArea;
     public GameObject bullet;
+    public GameObject[] coins;
     public bool isAttack;
     public bool isChase;
     public bool isDead;
@@ -143,7 +147,7 @@ public class Enemy : MonoBehaviour
             Bullet weapon = other.GetComponent<Bullet>();
             CurHP -= weapon.damage;
             Vector3 reactVec = transform.position - other.transform.position;
-            if (type != Type.D) Destroy(other.gameObject);
+          Destroy(other.gameObject);
 
             StartCoroutine(OnDamege(reactVec, false));
         }
@@ -172,6 +176,26 @@ public class Enemy : MonoBehaviour
             isChase = false;
             agent.enabled = false;
             animator.SetTrigger("Die");
+            PlayerMob player = target.GetComponent<PlayerMob>();
+            player.score += score;
+            int ranCoin = Random.Range(0, 3);
+            Instantiate(coins[ranCoin],transform.position,Quaternion.identity);
+
+            switch (type)
+            {
+                case Type.A:
+                    manager.enemyCntA--;
+                    break;
+                case Type.B:
+                    manager.enemyCntB--;
+                    break;
+                case Type.C:
+                    manager.enemyCntC--;
+                    break;
+                case Type.D:
+                    manager.enemyCntD--;
+                    break;
+            }
             if (isgranade)
             {
                 reactVec = reactVec.normalized;
