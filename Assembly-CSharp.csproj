@@ -63,6 +63,7 @@
     <Compile Include="Assets\Script\Boss\BossRock.cs" />
     <Compile Include="Assets\Script\Boss\BossMob.cs" />
     <Compile Include="Assets\Script\Missile.cs" />
+    <Compile Include="Assets\Script\StartZone.cs" />
     <Compile Include="Assets\Script\PlayerMob.cs" />
     <Compile Include="Assets\Script\Item.cs" />
     <Compile Include="Assets\QuarterView 3D Action BE5\ReadMe\Scripts\ReadmeBE5.cs" />
@@ -71,7 +72,9 @@
     <Compile Include="Assets\Script\Enemy.cs" />
     <Compile Include="Assets\Script\Boss\BossMisail.cs" />
     <Compile Include="Assets\Script\GameManager.cs" />
-    <Compile Include="Assets\Script\StartZone.cs" />
+    <Compile Include="Assets\PlayerAni.cs" />
+    <Compile Include="Assets\PlayerHit.cs" />
+    <Compile Include="Assets\Script\GenericSinglngton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

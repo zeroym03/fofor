@@ -55,6 +55,7 @@ public class GameManager : MonoBehaviour
     public List<int> enemyList;
     public Text bestScoreText;
     public Text CurScoreText;
+    PlayerHit playerHit;
     private void Awake()
     {
         enemyList = new List<int>();
@@ -183,7 +184,6 @@ public class GameManager : MonoBehaviour
             string.Format("{0:00}", hour) + ":" +
             string.Format("{0:00}", Min) + ":" +
             string.Format("{0:00}", second);
-
         playHealtText.text = player.health + " / " + player.maxhealth;
         playCoinText.text = string.Format("{0:n0}", player.coin);
         if (player.equipWeapon == null)

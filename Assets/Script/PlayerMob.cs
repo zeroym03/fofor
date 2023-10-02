@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static UnityEditor.Progress;
 
 public class PlayerMob : MonoBehaviour
 {
@@ -16,26 +17,24 @@ public class PlayerMob : MonoBehaviour
 
     public int ammo;
     public int coin;
-    public int health;
     public int hasGreandes;
     public int score;
 
     public int maxammo;
     public int maxcoin;
-    public int maxhealth;
     public int maxhasGreandes;
 
     float axisHorx;
     float axisVerz;
     float fireDelay;
-
+   public int health;
+   public int maxhealth = 300;
     bool isShop;
     bool isJump;
     bool isDodge;
     bool isSwap;
     bool isFireReady = true;
     bool isBorder;
-    bool isDamege = false;
 
     bool walkDown;
     bool JumpDown;
@@ -49,22 +48,25 @@ public class PlayerMob : MonoBehaviour
 
     bool isDead;
     bool isReload;
+    Rigidbody PlayerRigid;
 
 
     Vector3 moveVec;
     Vector3 DodgeVec;
-    Animator animator;
-    Rigidbody plrigidbody;
-    MeshRenderer[] meshes;
+
+
     GameObject nearobjeact;
-  public  Weapon equipWeapon;
+    public Weapon equipWeapon;
     int equipWeaponIndex = -1;
+
+    PlayerHit playerHit;
+    PlayerAni playerAni;
     private void Awake()
     {
-        plrigidbody = GetComponent<Rigidbody>();
-        animator = GetComponentInChildren<Animator>();
-        meshes = GetComponentsInChildren<MeshRenderer>();
-        PlayerPrefs.SetInt("MaxScore",1000);
+        playerHit = GetComponent<PlayerHit>();
+        playerAni = GetComponent<PlayerAni>();
+        PlayerRigid = GetComponent<Rigidbody>();
+        PlayerPrefs.SetInt("MaxScore", 1000);
     }
     void Start()
     {
@@ -72,14 +74,15 @@ public class PlayerMob : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Floor") {
-            animator.SetBool("isJump", false);
+        if (collision.gameObject.tag == "Floor")
+        {
+            playerAni.isFloor();
             isJump = false;
-               }
+        }
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Weapon"|| other.tag == "Shop")
+        if (other.tag == "Weapon" || other.tag == "Shop")
         {
             nearobjeact = other.gameObject;
         }
@@ -98,84 +101,9 @@ public class PlayerMob : MonoBehaviour
             nearobjeact = null;
         }
     }
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Item")
-        {
-            Item item = other.GetComponent<Item>();
-            switch (item.type)
-            {
-                case Item.Type.Ammo:
-                    ammo += item.value;
-                    if (ammo > maxammo) { ammo = maxammo; }
-                    break;
-                case Item.Type.Coin:
-                    coin += item.value;
-                    if (coin > maxcoin) { coin = maxcoin; }
-                    break;
-                case Item.Type.Heart:
-                    health += item.value;
-                    if (health > maxhealth) { health = maxhealth; }
-                    break;
-                case Item.Type.Grenade:
-                    grenades[hasGreandes].SetActive(true);
-                    hasGreandes += item.value;
-                    if (hasGreandes > maxhasGreandes) { hasGreandes = maxhasGreandes; }
-                    break;
-            }
-            Destroy(other.gameObject);
-        }
-      else  if (other.tag == "EnemyBullet" )
-        {
-            if (isDamege == false)
-            {
-                Debug.Log("EnemyBullet");
-                Bullet enemyBullet = other.GetComponent<Bullet>();
-                health -= enemyBullet.damage;
-                bool isBossAtk = other.name == "Boss Melee Alea";
-                StartCoroutine(OnDamege(isBossAtk));
-            }
-            if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
-        }
-    }
-    IEnumerator OnDamege(bool isBossAtk)
-    {
-        if (health <= 0 && !isDead)
-        {
-            OnDie();
-        }
-        isDamege = true;
-        foreach(MeshRenderer mesh in meshes)
-        {
-            mesh.material.color = Color.red;
-        }
-        if (isBossAtk)
-        {
-            plrigidbody.AddForce(transform.forward * -25, ForceMode.Impulse);
-        }
-        yield return new WaitForSeconds(1);
-        foreach (MeshRenderer mesh in meshes)
-        {
-            mesh.material.color = Color.white;
-        }
-        isDamege = false;
-        if (isBossAtk)
-        {
-            plrigidbody.velocity = Vector3.zero;
-        }
-    
-    }
-
-    void OnDie()
-    {
-        animator.SetTrigger("doDie");
-        isDead = true;
-        gameManager.GameOver();
-    }
     void FreezeRotatoin()
     {
-        plrigidbody.angularVelocity = Vector3.zero;
+        PlayerRigid.angularVelocity = Vector3.zero;
     }
     void StopToWall()
     {
@@ -190,19 +118,18 @@ public class PlayerMob : MonoBehaviour
     }
     void Update()
     {
-        if(!isDead)
+        if (!isDead)
         {
             Dodge();
             Jump();
             GetInput();
-            Anime();
             Attack();
             Reload();
             Swap();
             Interation();
             Granade();
+           playerAni.Run(moveVec, walkDown);
         }
-      //  OnDie();
     }
     void Granade()
     {
@@ -248,7 +175,7 @@ public class PlayerMob : MonoBehaviour
 
         if (rDown && isFireReady && isDodge == false && isSwap == false && isJump == false)
         {
-            animator.SetTrigger("doReload");
+            playerAni.Reload();
             isReload = true;
             Invoke("ReloadOut", 1f);
         }
@@ -281,10 +208,10 @@ public class PlayerMob : MonoBehaviour
         if (equipWeapon == null) return;
         fireDelay += Time.deltaTime;
         isFireReady = equipWeapon.rate < fireDelay;
-        if (fDown && isFireReady && isDodge == false && isSwap == false&&!isShop)
+        if (fDown && isFireReady && isDodge == false && isSwap == false && !isShop)
         {
             equipWeapon.Use();
-            animator.SetTrigger(equipWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
+            playerAni.WeaponTypeCH(equipWeapon);
             fireDelay = 0;
         }
     }
@@ -297,18 +224,12 @@ public class PlayerMob : MonoBehaviour
 
         Turn();
     }
-    void Anime()
-    {
-        animator.SetBool("isRun", moveVec != Vector3.zero);
-        animator.SetBool("isWalk", walkDown);
-    }
     void Jump()
     {
         if (JumpDown && moveVec == Vector3.zero && isJump == false && !isSwap)
         {
-            plrigidbody.AddForce(Vector3.up * 10, ForceMode.Impulse);
-            animator.SetBool("isJump", true);
-            animator.SetTrigger("doJump");
+            PlayerRigid.AddForce(Vector3.up * 10, ForceMode.Impulse);
+          playerAni.  DoJump();
             isJump = true;
         }
     }
@@ -318,7 +239,7 @@ public class PlayerMob : MonoBehaviour
         {
             DodgeVec = moveVec;
             speed *= 2;
-            animator.SetTrigger("doDodge");
+            playerAni. DoDodge();
             isDodge = true;
             Invoke("DodgeOut", 0.5f);
         }
@@ -346,7 +267,7 @@ public class PlayerMob : MonoBehaviour
             equipWeapon = weapons[weaponIndex].GetComponent<Weapon>();
             weapons[weaponIndex].SetActive(true);
 
-            animator.SetTrigger("DoSwap");
+       playerAni.DoSwap();
             isSwap = true;
             Invoke("SwapOut", 0.5f);
         }
