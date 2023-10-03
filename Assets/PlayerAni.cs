@@ -27,11 +27,11 @@ public class PlayerAni : MonoBehaviour
     {
         animator.SetTrigger("doReload");
     }
-    public void WeaponTypeCH(Weapon equipWeapon)
+    public void WeaponTypeCH(Weapon equipWeapon)//무기에 타입에따라 애니메이션 변경
     {
         animator.SetTrigger(equipWeapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
     }
-    public void Run(Vector3 moveVec ,bool walkDown)
+    public void Run(Vector3 moveVec ,bool walkDown)//해야하나생각중
     {
         animator.SetBool("isWalk", walkDown);
         animator.SetBool("isRun", moveVec != Vector3.zero);

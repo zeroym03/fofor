@@ -27,8 +27,8 @@ public class PlayerMob : MonoBehaviour
     float axisHorx;
     float axisVerz;
     float fireDelay;
-   public int health;
-   public int maxhealth = 300;
+    public int health;
+    public int maxhealth = 300;
     bool isShop;
     bool isJump;
     bool isDodge;
@@ -52,7 +52,7 @@ public class PlayerMob : MonoBehaviour
 
 
     Vector3 moveVec;
-    Vector3 DodgeVec;
+    Vector3 dodgeVec;
 
 
     GameObject nearobjeact;
@@ -63,9 +63,11 @@ public class PlayerMob : MonoBehaviour
     PlayerAni playerAni;
     private void Awake()
     {
+        PlayerRigid = GetComponent<Rigidbody>();//
+        //하나에 오브젝트에 리지드바디를 두스크립트가사용한다 이때 겟컴퍼넌트를 모두해야되는가???
+
         playerHit = GetComponent<PlayerHit>();
         playerAni = GetComponent<PlayerAni>();
-        PlayerRigid = GetComponent<Rigidbody>();
         PlayerPrefs.SetInt("MaxScore", 1000);
     }
     void Start()
@@ -128,7 +130,7 @@ public class PlayerMob : MonoBehaviour
             Swap();
             Interation();
             Granade();
-           playerAni.Run(moveVec, walkDown);
+            playerAni.Run(moveVec, walkDown);
         }
     }
     void Granade()
@@ -218,7 +220,7 @@ public class PlayerMob : MonoBehaviour
     void PlayerMove()
     {
         moveVec = new Vector3(axisHorx, 0, axisVerz).normalized;
-        if (isDodge == true) { moveVec = DodgeVec; }
+        if (isDodge == true) { moveVec = dodgeVec; }
         if (isSwap == true || isReload || isFireReady == false) { moveVec = Vector3.zero; }
         if (isBorder == false) { transform.position += moveVec * speed * Time.deltaTime; }
 
@@ -229,7 +231,7 @@ public class PlayerMob : MonoBehaviour
         if (JumpDown && moveVec == Vector3.zero && isJump == false && !isSwap)
         {
             PlayerRigid.AddForce(Vector3.up * 10, ForceMode.Impulse);
-          playerAni.  DoJump();
+            playerAni.DoJump();
             isJump = true;
         }
     }
@@ -237,9 +239,9 @@ public class PlayerMob : MonoBehaviour
     {
         if (JumpDown && moveVec != Vector3.zero && isJump == false && !isSwap)
         {
-            DodgeVec = moveVec;
+            dodgeVec = moveVec;
             speed *= 2;
-            playerAni. DoDodge();
+            playerAni.DoDodge();
             isDodge = true;
             Invoke("DodgeOut", 0.5f);
         }
@@ -267,7 +269,7 @@ public class PlayerMob : MonoBehaviour
             equipWeapon = weapons[weaponIndex].GetComponent<Weapon>();
             weapons[weaponIndex].SetActive(true);
 
-       playerAni.DoSwap();
+            playerAni.DoSwap();
             isSwap = true;
             Invoke("SwapOut", 0.5f);
         }

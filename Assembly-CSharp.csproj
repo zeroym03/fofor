@@ -56,8 +56,10 @@
     <Analyzer Include="D:\c++\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Script\GenericSinglngton.cs" />
     <Compile Include="Assets\Script\Grenade.cs" />
     <Compile Include="Assets\Script\Orbit.cs" />
+    <Compile Include="Assets\PlayerAni.cs" />
     <Compile Include="Assets\Script\camera.cs" />
     <Compile Include="Assets\Script\Bullet.cs" />
     <Compile Include="Assets\Script\Boss\BossRock.cs" />
@@ -71,10 +73,8 @@
     <Compile Include="Assets\Script\Shop\Shop.cs" />
     <Compile Include="Assets\Script\Enemy.cs" />
     <Compile Include="Assets\Script\Boss\BossMisail.cs" />
-    <Compile Include="Assets\Script\GameManager.cs" />
-    <Compile Include="Assets\PlayerAni.cs" />
     <Compile Include="Assets\PlayerHit.cs" />
-    <Compile Include="Assets\Script\GenericSinglngton.cs" />
+    <Compile Include="Assets\Script\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

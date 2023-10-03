@@ -20,22 +20,22 @@ public class PlayerHit : MonoBehaviour
        MeshRenderer[] meshes;
     private void Awake()
     {
-        playerRigid = GetComponent<Rigidbody>();
+        playerRigid = GetComponent<Rigidbody>();//
         playerMob = GetComponent<PlayerMob>();
         playerMob. health = playerMob.maxhealth;
         playerAni = GetComponent<PlayerAni>();
         meshes = GetComponentsInChildren<MeshRenderer>();
 
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //트리거에 태그에따라 아이템 / 적공격으로 분류
     {
-        if (other.tag == "Item")
+        if (other.tag == "Item")//아이템
         {
             Item item = other.GetComponent<Item>();
-            ItemTypeCheck(item );
+            ItemTypeCheck(item );//아이템 에 enum타입에따라 내용실행
             Destroy(other.gameObject);
         }
-        else if (other.tag == "EnemyBullet")
+        else if (other.tag == "EnemyBullet") //적공격
         {
             if (isDamege == false)
             {
@@ -43,7 +43,7 @@ public class PlayerHit : MonoBehaviour
                 playerMob.health -= enemyBullet.damage;
                 bool isBossAtk = other.name == "Boss Melee Alea";
                 Debug.Log(isBossAtk);
-                StartCoroutine(OnDamege(isBossAtk));
+                StartCoroutine(OnDamege(isBossAtk)); //데미지입는 함수,무적타임,메쉬변경,캐릭터 강제이동
             }
             if (other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
         }
